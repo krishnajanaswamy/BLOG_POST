@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title_tag }}{% endblock %}
+{% block content %}
+<h1>{{ post.title }}</h1>
+By {{ post.author.first_name }}
+
+    {{ post.author.last_name }}
+
+    - {{ post.post_date }}
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'update_post' post.pk %}">(Edit)</a>
+<a href="{% url 'delete_post' post.pk %}">(Delete)</a>
+    {% endif %}<br/>
+    <hr>
+    <br/>
+{{ post.body }}
+
+<br/><br/>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+    <br/> <br/>
+    <hr>
+    <form action="{% url 'like_post' post.pk %}" method="POST">
+    {% csrf_token %}
+
+    <button type="submit" name="post_id", value="{{ post.id }}", class="btn btn-primary btn-sm">like</button>
+    - {{ total_likes }}Likes
+
+    </form>
+
+    <h2>Comments</h2>
+    {% if not post.comments.all %}
+        No Comments<a href="{% url 'add_comment' post.pk %}">Add One</a>
+        {% else %}
+        {% for comment in post.comments.all %}
+            <strong>
+            {{ comment.name }}-
+            {{ comment.date_added }}</strong><br/>
+            <br/>
+          <hr>
+             <hr>
+            {{ comment.body }}<br/><br/>
+            <hr>
+             <hr>
+             <hr>
+        {% endfor %}
+        <a href="{% url 'add_comment' post.pk %}">Add Comment</a><br/><br/><br/>
+    {% endif %}
+
+
+
+{% endblock %}
